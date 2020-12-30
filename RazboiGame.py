@@ -3,11 +3,14 @@ import random
 
 import arcade
 
+from RazboiResult import RazboiResult
+
 SPRITE_SCALING = 5
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Razboi"
+
 
 class Razboi(arcade.View):
     def __init__(self):
@@ -97,7 +100,6 @@ class Razboi(arcade.View):
             self.cartiPc.append(currentPCard)
         print("Nr carti jucator/pc: " + str(len(self.cartiPlayer)) + "/" + str(len(self.cartiPc)))
 
-
     def razboi(self, carteP, carteC):
         print("Player: " + str(self.cartiPlayer))
         print("Pc: " + str(self.cartiPc))
@@ -120,8 +122,20 @@ class Razboi(arcade.View):
             t -= 1
             if t == 0:
                 if soldatiP[int(len(soldatiP) - 1)][0] == soldatiC[int(len(soldatiC) - 1)][0]:
+                    if len(self.cartiPc) == len(self.cartiPlayer) == 0:
+                        winner = "none"
+                        razboiResult = RazboiResult(self, soldatiC.copy(), soldatiP.copy(), winner, SPRITE_SCALING)
+                        razboiResult.setup()
+                        self.window.show_view(razboiResult)
                     t = soldatiP[len(soldatiP) - 1][0]
                 else:
+                    if soldatiP[int(len(soldatiP) - 1)][0] < soldatiC[int(len(soldatiC) - 1)][0]:
+                        winner = "pc"
+                    else:
+                        winner = "player"
+                    razboiResult = RazboiResult(self, soldatiC.copy(), soldatiP.copy(), winner, SPRITE_SCALING)
+                    razboiResult.setup()
+                    self.window.show_view(razboiResult)
                     if soldatiP[int(len(soldatiP) - 1)][0] < soldatiC[int(len(soldatiC) - 1)][0]:
                         soldatiC.extend(soldatiP)
                         self.cartiPc.extend(soldatiC)
@@ -165,7 +179,7 @@ class Razboi(arcade.View):
         arcade.draw_text(textC, 100, yc, arcade.color.WHITE, bold=True, font_size=16)
         if len(self.cartiPc) <= 0 or len(self.cartiPlayer) <= 0:
             text = ("Ai Castigat", arcade.color.BUD_GREEN) if len(self.cartiPc) <= 0 else (
-            "Ai pierdut!", arcade.color.CORNELL_RED)
+                "Ai pierdut!", arcade.color.CORNELL_RED)
             if len(self.cartiPc) <= 0 and len(self.cartiPlayer) <= 0:
                 text = ("DRAW!", arcade.color.ORANGE_PEEL)
             arcade.draw_text(text[0], SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
