@@ -28,6 +28,7 @@ class Razboi(arcade.View):
 
         self.name_to_index_texture = None
 
+        self.timer = 0
 
     def setup(self):
         pachet = [(x, y) for x in range(2, 15) for y in ['F', 'I', 'R', 'T']]
@@ -66,8 +67,73 @@ class Razboi(arcade.View):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.SPACE and (len(self.cartiPc) > 0 and len(self.cartiPlayer) > 0):
+            self.playRound()
+        if symbol == arcade.key.R:
+            self.setup()
+
     def on_show(self):
         arcade.set_background_color(arcade.color.AMAZON)
+
+    def playRound(self):
+        currentPCard = self.cartiPlayer.pop(0)
+
+        self.cartePlayerCurrent.set_texture(self.name_to_index_texture.get(str(currentPCard[0]) + str(currentPCard[1])))
+
+        currentCCard = self.cartiPc.pop(0)
+
+        self.cartePCCurrent.set_texture(self.name_to_index_texture.get(str(currentCCard[0]) + str(currentCCard[1])))
+        print("Player: " + str(currentPCard))
+        print("Player: " + str(currentCCard))
+        if currentPCard[0] == currentCCard[0]:
+            self.razboi(currentPCard, currentCCard)
+
+        elif currentPCard[0] > currentCCard[0]:
+            self.cartiPlayer.append(currentPCard)
+            self.cartiPlayer.append(currentCCard)
+        else:
+            self.cartiPc.append(currentCCard)
+            self.cartiPc.append(currentPCard)
+        print("Nr carti jucator/pc: " + str(len(self.cartiPlayer)) + "/" + str(len(self.cartiPc)))
+
+
+    def razboi(self, carteP, carteC):
+        print("Player: " + str(self.cartiPlayer))
+        print("Pc: " + str(self.cartiPc))
+        t = carteP[0]
+        soldatiP = list()
+        soldatiC = list()
+        while t > 0:
+            if len(self.cartiPc) > 0: soldatiC.append(self.cartiPc.pop(0))
+            if len(self.cartiPlayer) > 0: soldatiP.append(self.cartiPlayer.pop(0))
+
+            print("Player: " + str(soldatiP[int(len(soldatiP) - 1)]))
+            print("Computer: " + str(soldatiC[int(len(soldatiC) - 1)]))
+            self.cartePlayerCurrent.set_texture(
+                self.name_to_index_texture.get(
+                    str(soldatiP[int(len(soldatiP) - 1)][0]) + str(soldatiP[int(len(soldatiP) - 1)][1])))
+            self.cartePCCurrent.set_texture(
+                self.name_to_index_texture.get(
+                    str(soldatiC[int(len(soldatiC) - 1)][0]) + str(soldatiC[int(len(soldatiC) - 1)][1])))
+            # time.sleep(0.5)
+            t -= 1
+            if t == 0:
+                if soldatiP[int(len(soldatiP) - 1)][0] == soldatiC[int(len(soldatiC) - 1)][0]:
+                    t = soldatiP[len(soldatiP) - 1][0]
+                else:
+                    if soldatiP[int(len(soldatiP) - 1)][0] < soldatiC[int(len(soldatiC) - 1)][0]:
+                        soldatiC.extend(soldatiP)
+                        self.cartiPc.extend(soldatiC)
+                        self.cartiPc.append(carteP)
+                        self.cartiPc.append(carteC)
+                    else:
+                        soldatiC.extend(soldatiP)
+                        self.cartiPlayer.extend(soldatiC)
+                        self.cartiPlayer.append(carteP)
+                        self.cartiPlayer.append(carteC)
+        print("Player: " + str(self.cartiPlayer))
+        print("Pc:     " + str(self.cartiPc))
 
     def on_draw(self):
         arcade.start_render()
@@ -104,6 +170,12 @@ class Razboi(arcade.View):
                 text = ("DRAW!", arcade.color.ORANGE_PEEL)
             arcade.draw_text(text[0], SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
                              text[1], bold=True, font_size=52, anchor_x="center")
+
+    def on_update(self, delta_time: float):
+        if len(self.cartiPc) <= 0 or len(self.cartiPlayer) <= 0:
+            self.timer += delta_time
+        if self.timer > 2:
+            self.setup()
 
 
 window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
