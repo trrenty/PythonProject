@@ -4,24 +4,24 @@ from RazboiResult import RazboiResult
 
 
 class RazboiInitialView(arcade.View):
-    def __init__(self, razboiGame, soldatiPc, soldatiPlayer, cartePlayer, cartePc, winner, SPRITE_SCALING):
+    def __init__(self, razboi_game, soldati_pc, soldati_player, carte_player, carte_pc, winner, sprite_scaling):
         super().__init__()
-        urlCarteP = "Images/" + str(cartePlayer[0]) + str(cartePlayer[1]) + ".png"
-        urlCarteC = "Images/" + str(cartePc[0]) + str(cartePc[1]) + ".png"
+        url_carte_p = "Images/" + str(carte_player[0]) + str(carte_player[1]) + ".png"
+        url_carte_c = "Images/" + str(carte_pc[0]) + str(carte_pc[1]) + ".png"
 
-        self.SPRITE_SCALING = SPRITE_SCALING
+        self.sprite_scaling = sprite_scaling
 
-        self.cartePlayer = arcade.Sprite(urlCarteP, SPRITE_SCALING)
-        self.cartePlayer.center_x = self.window.width / 3
-        self.cartePlayer.center_y = self.window.height / 2
+        self.carte_player = arcade.Sprite(url_carte_p, sprite_scaling)
+        self.carte_player.center_x = self.window.width / 3
+        self.carte_player.center_y = self.window.height / 2
 
-        self.cartePc = arcade.Sprite(urlCarteC, SPRITE_SCALING)
-        self.cartePc.center_x = self.window.width * 2 / 3
-        self.cartePc.center_y = self.window.height / 2
+        self.carte_pc = arcade.Sprite(url_carte_c, sprite_scaling)
+        self.carte_pc.center_x = self.window.width * 2 / 3
+        self.carte_pc.center_y = self.window.height / 2
 
-        self.soldatiPc = soldatiPc
-        self.soldatiPlayer = soldatiPlayer
-        self.razboiGame = razboiGame
+        self.soldati_pc = soldati_pc
+        self.soldati_player = soldati_player
+        self.razboi_game = razboi_game
         self.winner = winner
 
     def on_show(self):
@@ -44,20 +44,20 @@ class RazboiInitialView(arcade.View):
                          anchor_x="center")
 
         arcade.draw_text("Cartea ta",
-                         self.cartePlayer.center_x,
-                         self.cartePlayer.center_y - self.cartePlayer.height / 2 - 25,
+                         self.carte_player.center_x,
+                         self.carte_player.center_y - self.carte_player.height / 2 - 25,
                          arcade.color.WHITE, anchor_x="center")
 
         arcade.draw_text("Carte PC",
-                         self.cartePc.center_x,
-                         self.cartePc.center_y - self.cartePc.height / 2 - 25,
+                         self.carte_pc.center_x,
+                         self.carte_pc.center_y - self.carte_pc.height / 2 - 25,
                          arcade.color.WHITE, anchor_x="center")
 
-        self.cartePc.draw()
-        self.cartePlayer.draw()
+        self.carte_pc.draw()
+        self.carte_player.draw()
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.SPACE:
-            razboiResult = RazboiResult(self.razboiGame, self.soldatiPc, self.soldatiPlayer, self.winner, self.SPRITE_SCALING)
-            razboiResult.setup()
-            self.window.show_view(razboiResult)
+            razboi_result = RazboiResult(self.razboi_game, self.soldati_pc, self.soldati_player, self.winner, self.sprite_scaling)
+            razboi_result.setup()
+            self.window.show_view(razboi_result)

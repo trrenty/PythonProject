@@ -1,47 +1,48 @@
 import arcade
 
+
 class RazboiResult(arcade.View):
-    def __init__(self, razboiGame, soldatiPc, soldatiPlayer, winner, SPRITE_SCALING):
+    def __init__(self, razboi_game, soldati_pc, soldati_player, winner, sprite_scaling):
         super().__init__()
-        self.razboiGame = razboiGame
+        self.razboi_game = razboi_game
 
-        self.SPRITE_SCALING = SPRITE_SCALING
+        self.sprite_scaling = sprite_scaling
 
-        self.soldatiPc = arcade.Sprite(scale=SPRITE_SCALING)
-        self.soldatiPlayer = arcade.Sprite(scale=SPRITE_SCALING)
+        self.soldati_pc = arcade.Sprite(scale=sprite_scaling)
+        self.soldati_player = arcade.Sprite(scale=sprite_scaling)
 
-        self.soldatiPlayer.center_y = self.window.height * 1 / 4
-        self.soldatiPlayer.center_x = 100
-        self.soldatiPc.center_y = self.window.height * 3 / 4
-        self.soldatiPc.center_x = 100
+        self.soldati_player.center_y = self.window.height * 1 / 4
+        self.soldati_player.center_x = 100
+        self.soldati_pc.center_y = self.window.height * 3 / 4
+        self.soldati_pc.center_x = 100
 
-        i = len(self.soldatiPlayer.textures) - 1
+        i = len(self.soldati_player.textures) - 1
         self.winner = winner
 
-        for i in range(0, len(soldatiPlayer)):
-            keyP = str(soldatiPlayer[i][0]) + str(soldatiPlayer[i][1])
-            self.soldatiPlayer.append_texture(arcade.load_texture("Images/" + keyP + ".png"))
+        for i in range(0, len(soldati_player)):
+            key_p = str(soldati_player[i][0]) + str(soldati_player[i][1])
+            self.soldati_player.append_texture(arcade.load_texture("Images/" + key_p + ".png"))
 
-        for i in range(0, len(soldatiPc)):
-            keyC = str(soldatiPc[i][0]) + str(soldatiPc[i][1])
-            self.soldatiPc.append_texture(arcade.load_texture("Images/" + keyC + ".png"))
+        for i in range(0, len(soldati_pc)):
+            key_c = str(soldati_pc[i][0]) + str(soldati_pc[i][1])
+            self.soldati_pc.append_texture(arcade.load_texture("Images/" + key_c + ".png"))
 
     def setup(self):
         # CENTER THE CARDS NICELY
-        newScale = self.SPRITE_SCALING
+        new_scale = self.sprite_scaling
         break_condition = False
         while not break_condition:
             cards_width = 0
-            for i in range(0, len(self.soldatiPlayer.textures)):
-                cards_width += 33 * newScale + 10
+            for i in range(0, max(len(self.soldati_player.textures), len(self.soldati_pc.textures))):
+                cards_width += 33 * new_scale + 10
             if cards_width <= self.window.width - 100:
                 print(cards_width)
                 break_condition = True
             else:
-                newScale -= 0.5
-                print(newScale)
-        self.soldatiPc.scale = newScale
-        self.soldatiPlayer.scale = newScale
+                new_scale -= 0.5
+                print(new_scale)
+        self.soldati_pc.scale = new_scale
+        self.soldati_player.scale = new_scale
 
     def on_show(self):
         arcade.set_background_color(arcade.color.ARSENIC)
@@ -50,27 +51,27 @@ class RazboiResult(arcade.View):
         arcade.start_render()
         arcade.draw_text("Carti folosite in Razboi ale Playerului:",
                          self.window.width / 2,
-                         self.soldatiPlayer.center_y + self.soldatiPlayer.height / 2 + 10,
+                         self.soldati_player.center_y + self.soldati_player.height / 2 + 10,
                          arcade.color.WHITE, anchor_x="center")
         arcade.draw_text("Carti folosite in Razboi ale PC-ului:",
                          self.window.width / 2,
-                         self.soldatiPc.center_y + self.soldatiPc.height / 2 + 10,
+                         self.soldati_pc.center_y + self.soldati_pc.height / 2 + 10,
                          arcade.color.WHITE,
                          anchor_x="center")
-        px = self.soldatiPc.center_x
-        cx = self.soldatiPlayer.center_x
-        for i in range(0, len(self.soldatiPc.textures)):
-            self.soldatiPc.set_texture(i)
-            self.soldatiPc.draw()
-            self.soldatiPc.center_x += self.soldatiPc.width + 10
+        px = self.soldati_pc.center_x
+        cx = self.soldati_player.center_x
+        for i in range(0, len(self.soldati_pc.textures)):
+            self.soldati_pc.set_texture(i)
+            self.soldati_pc.draw()
+            self.soldati_pc.center_x += self.soldati_pc.width + 10
 
-        for i in range(0, len(self.soldatiPlayer.textures)):
-            self.soldatiPlayer.set_texture(i)
-            self.soldatiPlayer.draw()
-            self.soldatiPlayer.center_x += self.soldatiPlayer.width + 10
+        for i in range(0, len(self.soldati_player.textures)):
+            self.soldati_player.set_texture(i)
+            self.soldati_player.draw()
+            self.soldati_player.center_x += self.soldati_player.width + 10
 
-        self.soldatiPlayer.center_x = px
-        self.soldatiPc.center_x = cx
+        self.soldati_player.center_x = px
+        self.soldati_pc.center_x = cx
         arcade.draw_text("Apasa SPACE pentru a continua jocul",
                          self.window.width / 2,
                          10,
@@ -93,5 +94,4 @@ class RazboiResult(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.SPACE:
-            self.window.show_view(self.razboiGame)
-
+            self.window.show_view(self.razboi_game)

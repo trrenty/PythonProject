@@ -18,13 +18,13 @@ class Razboi(arcade.View):
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
-        self.flippedCards = None
+        self.flipped_cards = None
 
-        self.cartePlayerCurrent = None
-        self.cartePCCurrent = None
+        self.carte_player_current = None
+        self.carte_pc_current = None
 
-        self.cartiPlayer = None
-        self.cartiPc = None
+        self.carti_player = None
+        self.carti_pc = None
 
         self.p_carti_count = 0
         self.c_carti_count = 0
@@ -37,23 +37,23 @@ class Razboi(arcade.View):
         pachet = [(x, y) for x in range(2, 15) for y in ['F', 'I', 'R', 'T']]
         random.shuffle(pachet)
 
-        self.cartiPlayer = pachet[0:int(len(pachet) / 2)]
-        self.cartiPc = pachet[int(len(pachet) / 2):]
+        self.carti_player = pachet[0:int(len(pachet) / 2)]
+        self.carti_pc = pachet[int(len(pachet) / 2):]
 
-        self.p_carti_count = len(self.cartiPlayer)
-        self.c_carti_count = len(self.cartiPc)
+        self.p_carti_count = len(self.carti_player)
+        self.c_carti_count = len(self.carti_pc)
 
-        self.flippedCards = arcade.Sprite("Images/back.png", SPRITE_SCALING)
-        self.flippedCards.append_texture(arcade.load_texture("Images/back1.png"))
-        self.flippedCards.center_x = 100
+        self.flipped_cards = arcade.Sprite("Images/back.png", SPRITE_SCALING)
+        self.flipped_cards.append_texture(arcade.load_texture("Images/back1.png"))
+        self.flipped_cards.center_x = 100
 
-        self.cartePlayerCurrent = arcade.Sprite("Images/back.png", SPRITE_SCALING)
-        self.cartePlayerCurrent.center_x = 850
-        self.cartePlayerCurrent.center_y = 150
+        self.carte_player_current = arcade.Sprite("Images/back.png", SPRITE_SCALING)
+        self.carte_player_current.center_x = 850
+        self.carte_player_current.center_y = 150
 
-        self.cartePCCurrent = arcade.Sprite("Images/back1.png", SPRITE_SCALING)
-        self.cartePCCurrent.center_x = 850
-        self.cartePCCurrent.center_y = 450
+        self.carte_pc_current = arcade.Sprite("Images/back1.png", SPRITE_SCALING)
+        self.carte_pc_current.center_x = 850
+        self.carte_pc_current.center_y = 450
 
         self.name_to_index_texture = dict()
         self.timer = 0
@@ -61,9 +61,9 @@ class Razboi(arcade.View):
         for carte in pachet:
             # dictionar.update({key: aparitii})
             key = str(carte[0]) + str(carte[1])
-            self.cartePlayerCurrent.append_texture(
+            self.carte_player_current.append_texture(
                 arcade.load_texture("Images/" + key + ".png"))
-            self.cartePCCurrent.append_texture(
+            self.carte_pc_current.append_texture(
                 arcade.load_texture("Images/" + key + ".png"))
             self.name_to_index_texture.update({key: i})
             i += 1
@@ -71,122 +71,128 @@ class Razboi(arcade.View):
         arcade.set_background_color(arcade.color.AMAZON)
 
     def on_key_press(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.SPACE and (len(self.cartiPc) > 0 and len(self.cartiPlayer) > 0):
-            self.playRound()
+        if symbol == arcade.key.SPACE and (len(self.carti_pc) > 0 and len(self.carti_player) > 0):
+            self.play_round()
         if symbol == arcade.key.R:
             self.setup()
 
     def on_show(self):
         arcade.set_background_color(arcade.color.AMAZON)
 
-    def playRound(self):
-        currentPCard = self.cartiPlayer.pop(0)
+    def play_round(self):
+        current_p_card = self.carti_player.pop(0)
 
-        self.cartePlayerCurrent.set_texture(self.name_to_index_texture.get(str(currentPCard[0]) + str(currentPCard[1])))
+        self.carte_player_current.set_texture(
+            self.name_to_index_texture.get(str(current_p_card[0]) + str(current_p_card[1])))
 
-        currentCCard = self.cartiPc.pop(0)
+        current_c_card = self.carti_pc.pop(0)
 
-        self.cartePCCurrent.set_texture(self.name_to_index_texture.get(str(currentCCard[0]) + str(currentCCard[1])))
-        print("Player: " + str(currentPCard))
-        print("Player: " + str(currentCCard))
-        if currentPCard[0] == currentCCard[0]:
-            self.razboi(currentPCard, currentCCard)
+        self.carte_pc_current.set_texture(
+            self.name_to_index_texture.get(str(current_c_card[0]) + str(current_c_card[1])))
+        print("Player: " + str(current_p_card))
+        print("Player: " + str(current_c_card))
+        if current_p_card[0] == current_c_card[0]:
+            self.razboi(current_p_card, current_c_card)
 
-        elif currentPCard[0] > currentCCard[0]:
-            self.cartiPlayer.append(currentPCard)
-            self.cartiPlayer.append(currentCCard)
+        elif current_p_card[0] > current_c_card[0]:
+            self.carti_player.append(current_p_card)
+            self.carti_player.append(current_c_card)
         else:
-            self.cartiPc.append(currentCCard)
-            self.cartiPc.append(currentPCard)
-        print("Nr carti jucator/pc: " + str(len(self.cartiPlayer)) + "/" + str(len(self.cartiPc)))
+            self.carti_pc.append(current_c_card)
+            self.carti_pc.append(current_p_card)
+        print("Nr carti jucator/pc: " + str(len(self.carti_player)) + "/" + str(len(self.carti_pc)))
 
-    def razboi(self, carteP, carteC):
-        print("Player: " + str(self.cartiPlayer))
-        print("Pc: " + str(self.cartiPc))
-        t = carteP[0]
-        soldatiP = list()
-        soldatiC = list()
+    def razboi(self, carte_p, carte_c):
+        print("Player: " + str(self.carti_player))
+        print("Pc: " + str(self.carti_pc))
+        t = carte_p[0]
+        soldati_p = list()
+        soldati_c = list()
         while t > 0:
-            if len(self.cartiPc) > 0: soldatiC.append(self.cartiPc.pop(0))
-            if len(self.cartiPlayer) > 0: soldatiP.append(self.cartiPlayer.pop(0))
+            if len(self.carti_pc) > 0:
+                soldati_c.append(self.carti_pc.pop(0))
+            if len(self.carti_player) > 0:
+                soldati_p.append(self.carti_player.pop(0))
 
-            print("Player: " + str(soldatiP[int(len(soldatiP) - 1)]))
-            print("Computer: " + str(soldatiC[int(len(soldatiC) - 1)]))
-            self.cartePlayerCurrent.set_texture(
+            print("Player: " + str(soldati_p[int(len(soldati_p) - 1)]))
+            print("Computer: " + str(soldati_c[int(len(soldati_c) - 1)]))
+            self.carte_player_current.set_texture(
                 self.name_to_index_texture.get(
-                    str(soldatiP[int(len(soldatiP) - 1)][0]) + str(soldatiP[int(len(soldatiP) - 1)][1])))
-            self.cartePCCurrent.set_texture(
+                    str(soldati_p[int(len(soldati_p) - 1)][0]) + str(soldati_p[int(len(soldati_p) - 1)][1])))
+            self.carte_pc_current.set_texture(
                 self.name_to_index_texture.get(
-                    str(soldatiC[int(len(soldatiC) - 1)][0]) + str(soldatiC[int(len(soldatiC) - 1)][1])))
+                    str(soldati_c[int(len(soldati_c) - 1)][0]) + str(soldati_c[int(len(soldati_c) - 1)][1])))
             # time.sleep(0.5)
             t -= 1
             if t == 0:
-                if soldatiP[int(len(soldatiP) - 1)][0] == soldatiC[int(len(soldatiC) - 1)][0]:
-                    if len(self.cartiPc) == len(self.cartiPlayer) == 0:
+                if soldati_p[int(len(soldati_p) - 1)][0] == soldati_c[int(len(soldati_c) - 1)][0]:
+                    if len(self.carti_pc) == len(self.carti_player) == 0:
                         winner = "none"
-                        razboiResult = RazboiInitialView(self, soldatiC.copy(), soldatiP.copy(), carteP, carteC, winner, SPRITE_SCALING)
-                        # razboiResult.setup()
-                        self.window.show_view(razboiResult)
-                    t = soldatiP[len(soldatiP) - 1][0]
+                        razboi_result = RazboiInitialView(self, soldati_c.copy(), soldati_p.copy(), carte_p, carte_c,
+                                                          winner, SPRITE_SCALING)
+                        # razboi_result.setup()
+                        self.window.show_view(razboi_result)
+                    t = soldati_p[len(soldati_p) - 1][0]
                 else:
-                    if soldatiP[int(len(soldatiP) - 1)][0] < soldatiC[int(len(soldatiC) - 1)][0]:
+                    if soldati_p[int(len(soldati_p) - 1)][0] < soldati_c[int(len(soldati_c) - 1)][0]:
                         winner = "pc"
                     else:
                         winner = "player"
-                    razboiResult = RazboiInitialView(self, soldatiC.copy(), soldatiP.copy(), carteP, carteC, winner, SPRITE_SCALING)
-                    # razboiResult.setup()
-                    self.window.show_view(razboiResult)
-                    if soldatiP[int(len(soldatiP) - 1)][0] < soldatiC[int(len(soldatiC) - 1)][0]:
-                        soldatiC.extend(soldatiP)
-                        self.cartiPc.extend(soldatiC)
-                        self.cartiPc.append(carteP)
-                        self.cartiPc.append(carteC)
+                    razboi_result = RazboiInitialView(self, soldati_c.copy(), soldati_p.copy(), carte_p, carte_c,
+                                                      winner, SPRITE_SCALING)
+                    # razboi_result.setup()
+                    self.window.show_view(razboi_result)
+                    if soldati_p[int(len(soldati_p) - 1)][0] < soldati_c[int(len(soldati_c) - 1)][0]:
+                        soldati_c.extend(soldati_p)
+                        self.carti_pc.extend(soldati_c)
+                        self.carti_pc.append(carte_p)
+                        self.carti_pc.append(carte_c)
                     else:
-                        soldatiC.extend(soldatiP)
-                        self.cartiPlayer.extend(soldatiC)
-                        self.cartiPlayer.append(carteP)
-                        self.cartiPlayer.append(carteC)
-        print("Player: " + str(self.cartiPlayer))
-        print("Pc:     " + str(self.cartiPc))
+                        soldati_c.extend(soldati_p)
+                        self.carti_player.extend(soldati_c)
+                        self.carti_player.append(carte_p)
+                        self.carti_player.append(carte_c)
+        print("Player: " + str(self.carti_player))
+        print("Pc:     " + str(self.carti_pc))
 
     def on_draw(self):
         arcade.start_render()
 
-        cy = self.flippedCards.center_x
-        self.flippedCards.set_texture(1)
-        self.flippedCards.center_y = 450
-        for i in range(0, len(self.cartiPc)):
-            self.flippedCards.center_x += 10
-            self.flippedCards.draw()
+        cy = self.flipped_cards.center_x
+        self.flipped_cards.set_texture(1)
+        self.flipped_cards.center_y = 450
+        for i in range(0, len(self.carti_pc)):
+            self.flipped_cards.center_x += 10
+            self.flipped_cards.draw()
 
-        self.flippedCards.set_texture(0)
-        self.flippedCards.center_y = 150
-        self.flippedCards.center_x = cy
-        for i in range(0, len(self.cartiPlayer)):
-            self.flippedCards.center_x += 10
-            self.flippedCards.draw()
+        self.flipped_cards.set_texture(0)
+        self.flipped_cards.center_y = 150
+        self.flipped_cards.center_x = cy
+        for i in range(0, len(self.carti_player)):
+            self.flipped_cards.center_x += 10
+            self.flipped_cards.draw()
 
-        self.flippedCards.center_x = cy
+        self.flipped_cards.center_x = cy
 
-        self.cartePlayerCurrent.draw()
-        self.cartePCCurrent.draw()
-        textP = f"Player cards: {len(self.cartiPlayer)}"
-        textC = f"Computer cards: {len(self.cartiPc)}"
+        self.carte_player_current.draw()
+        self.carte_pc_current.draw()
+        text_p = f"Player cards: {len(self.carti_player)}"
+        text_c = f"Computer cards: {len(self.carti_pc)}"
 
-        yp = 150 + self.flippedCards.height / 2 + 10
-        yc = 450 + self.flippedCards.height / 2 + 10
-        arcade.draw_text(textP, 100, yp, arcade.color.WHITE, bold=True, font_size=16)
-        arcade.draw_text(textC, 100, yc, arcade.color.WHITE, bold=True, font_size=16)
-        if len(self.cartiPc) <= 0 or len(self.cartiPlayer) <= 0:
-            text = ("Ai Castigat", arcade.color.BUD_GREEN) if len(self.cartiPc) <= 0 else (
+        yp = 150 + self.flipped_cards.height / 2 + 10
+        yc = 450 + self.flipped_cards.height / 2 + 10
+        arcade.draw_text(text_p, 100, yp, arcade.color.WHITE, bold=True, font_size=16)
+        arcade.draw_text(text_c, 100, yc, arcade.color.WHITE, bold=True, font_size=16)
+        if len(self.carti_pc) <= 0 or len(self.carti_player) <= 0:
+            text = ("Ai Castigat", arcade.color.BUD_GREEN) if len(self.carti_pc) <= 0 else (
                 "Ai pierdut!", arcade.color.CORNELL_RED)
-            if len(self.cartiPc) <= 0 and len(self.cartiPlayer) <= 0:
+            if len(self.carti_pc) <= 0 and len(self.carti_player) <= 0:
                 text = ("DRAW!", arcade.color.ORANGE_PEEL)
             arcade.draw_text(text[0], SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
                              text[1], bold=True, font_size=52, anchor_x="center")
 
     def on_update(self, delta_time: float):
-        if len(self.cartiPc) <= 0 or len(self.cartiPlayer) <= 0:
+        if len(self.carti_pc) <= 0 or len(self.carti_player) <= 0:
             self.timer += delta_time
         if self.timer > 2:
             self.setup()
