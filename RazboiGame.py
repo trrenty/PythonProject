@@ -3,7 +3,7 @@ import random
 
 import arcade
 
-from RazboiResult import RazboiResult
+from RazboiInitialView import RazboiInitialView
 
 SPRITE_SCALING = 5
 
@@ -124,8 +124,8 @@ class Razboi(arcade.View):
                 if soldatiP[int(len(soldatiP) - 1)][0] == soldatiC[int(len(soldatiC) - 1)][0]:
                     if len(self.cartiPc) == len(self.cartiPlayer) == 0:
                         winner = "none"
-                        razboiResult = RazboiResult(self, soldatiC.copy(), soldatiP.copy(), winner, SPRITE_SCALING)
-                        razboiResult.setup()
+                        razboiResult = RazboiInitialView(self, soldatiC.copy(), soldatiP.copy(), carteP, carteC, winner, SPRITE_SCALING)
+                        # razboiResult.setup()
                         self.window.show_view(razboiResult)
                     t = soldatiP[len(soldatiP) - 1][0]
                 else:
@@ -133,8 +133,8 @@ class Razboi(arcade.View):
                         winner = "pc"
                     else:
                         winner = "player"
-                    razboiResult = RazboiResult(self, soldatiC.copy(), soldatiP.copy(), winner, SPRITE_SCALING)
-                    razboiResult.setup()
+                    razboiResult = RazboiInitialView(self, soldatiC.copy(), soldatiP.copy(), carteP, carteC, winner, SPRITE_SCALING)
+                    # razboiResult.setup()
                     self.window.show_view(razboiResult)
                     if soldatiP[int(len(soldatiP) - 1)][0] < soldatiC[int(len(soldatiC) - 1)][0]:
                         soldatiC.extend(soldatiP)
